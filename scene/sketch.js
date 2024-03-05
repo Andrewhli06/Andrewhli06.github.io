@@ -12,12 +12,13 @@ let jump = 15; // Jump power
 let ground = 20;
 let d = 20;
 let dx = 3;
+let obstacles = [];
 
 let x, y, vy;
 
 function setup() {
   createCanvas(400, 400);
-  
+  randomArray();
   x = width / 2;
   y = height - ground - d / 2;
   vy = 0;
@@ -63,9 +64,22 @@ function moveChar() {
 }
 
 function blocks() {
-  square(100, height-2*ground, ground)
+  for (let i = 0; i < 20; i++) {
+    if (obstacles[i] > 1) {
+      rect(i*ground, height-(obstacles[i]*ground+ground), ground, obstacles[i]*ground);
+    } 
+    if (obstacles[i] === 1) {
+      rect(i*ground, height-2*ground, ground, ground);   
+    }
+  }
+}
+
+function randomArray() {
+  for (let i = 0; i <= 20; i++) {
+    obstacles.push(floor(random(1,6)));
+  }
 }
 
 function collisionDetect() {
-  
+
 }
