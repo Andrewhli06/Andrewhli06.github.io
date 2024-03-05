@@ -11,7 +11,7 @@ let g = 1; // Gravity
 let jump = 15; // Jump power
 let ground = 20;
 let d = 20;
-let dx = 3;
+let dx = 1;
 let obstacles = [];
 
 let x, y, vy;
@@ -19,7 +19,7 @@ let x, y, vy;
 function setup() {
   createCanvas(400, 400);
   randomArray();
-  x = width / 2;
+  x = d/2;
   y = height - ground - d / 2;
   vy = 0;
 }
@@ -29,6 +29,7 @@ function draw() {
   
   let gy = height - ground;
   line(0, gy, width, gy);
+  collisionDetect();
   blocks();
   circle(x,y,d);
   
@@ -76,10 +77,14 @@ function blocks() {
 
 function randomArray() {
   for (let i = 0; i <= 20; i++) {
-    obstacles.push(floor(random(1,6)));
+    obstacles.push(floor(random(0,6)));
   }
 }
 
 function collisionDetect() {
-
+  let r = 0;
+  if (x === d/2 + ground*r) {
+    y = height - d/2 - obstacles[r]*ground - ground;
+    r++;
+  }
 }
