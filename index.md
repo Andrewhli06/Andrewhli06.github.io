@@ -6,3 +6,4 @@
 
 ## Projects
 - [Interactive Scene](scene)
+- [Final Interactive Scene](finalscene)
