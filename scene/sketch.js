@@ -12,14 +12,15 @@ let jump = 15; // Jump power
 let ground = 20;
 let d = 20;
 let dx = 1;
-let obstacles = [];
+let obstacles = [0,0,0,0,0,0,1,1,2,2,3,3,0,0,0,0,0,0,0,0];
 let r = 0;
+let rx;
 
 let x, y, vy;
 
 function setup() {
   createCanvas(400, 400);
-  randomArray();
+  // randomArray();
   x = d/2;
   y = height - ground - d / 2;
   vy = 0;
@@ -35,17 +36,7 @@ function draw() {
   boundaryControl();
   blocks();
   circle(x,y,d);
-  
-  y += vy;
-
-  
-  if(y < height - ground - d / 2){ // in the air
-    vy += g;
-  }
-  else{
-    vy = 0;
-    y = height - ground - d / 2;
-  }
+  gravity();
   moveChar();
 
 }
@@ -71,11 +62,12 @@ function moveChar() {
 
 function blocks() {
   for (let i = 0; i < 20; i++) {
+    rx = i*ground;
     if (obstacles[i] > 1) {
-      rect(i*ground, height-(obstacles[i]*ground+ground), ground, obstacles[i]*ground);
+      rect(rx, height-(obstacles[i]*ground+ground), ground, obstacles[i]*ground);
     } 
     if (obstacles[i] === 1) {
-      rect(i*ground, height-2*ground, ground, ground);   
+      rect(rx, height-2*ground, ground, ground);   
     }
   }
 }
@@ -109,3 +101,15 @@ function blockDetect() {
     y = height - ground - d / 2 - obstacles[(x - d / 2) / 20] * ground;
   }
 }
+
+function gravity() {
+  y += vy;
+  if(y < height - ground - d / 2){ // in the air
+    vy += g;
+  }
+  else{
+    vy = 0;
+    y = height - ground - d / 2;
+  }
+}
+
