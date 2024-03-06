@@ -34,7 +34,7 @@ function draw() {
   blockDetect();
   blocks();
   circle(x,y,d);
-  gravity();
+  // gravity();
   moveChar();
 
 }
