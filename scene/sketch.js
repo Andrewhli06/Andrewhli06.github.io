@@ -15,7 +15,7 @@ let dx = 1;
 let obstacles = [0,0,0,0,0,0,1,1,2,2,3,3,0,0,0,0,0,0,0,0];
 let r = 0;
 let rx, ry, rw, rh;
-
+let gy;
 let x, y, vy;
 
 function setup() {
@@ -24,16 +24,14 @@ function setup() {
   x = d/2;
   y = height - ground - d / 2;
   vy = 0;
+  gy = height - ground;
 }
 
 function draw() {
-  background(220);
-  
-  let gy = height - ground;
+  background(220); 
   line(0, gy, width, gy);
   xValTrack();
   blockDetect();
-  boundaryControl();
   blocks();
   circle(x,y,d);
   gravity();
@@ -50,6 +48,12 @@ function keyPressed(){
 }
 
 function moveChar() {
+  if (x < d/2) {
+    x = d/2;
+  }
+  if (x > width - d/2) {
+    x = width - d/2;
+  }
   if (x >= d / 2 && x <= width - d / 2) {
     if (keyIsDown(65)) {
       x -= dx;
@@ -65,7 +69,7 @@ function blocks() {
     rx = i*ground;
     ry = height-(obstacles[i]*ground+ground);
     rw = ground;
-    rh = obstacles[i]*ground
+    rh = obstacles[i]*ground;
     if (obstacles[i] > 1) {
       rect(rx, ry, rw, rh);
     } 
@@ -78,15 +82,6 @@ function blocks() {
 function randomArray() {
   for (let i = 0; i <= 20; i++) {
     obstacles.push(floor(random(0,6)));
-  }
-}
-
-function boundaryControl() {
-  if (x < d/2) {
-    x = d/2;
-  }
-  if (x > width - d/2) {
-    x = width - d/2;
   }
 }
 
