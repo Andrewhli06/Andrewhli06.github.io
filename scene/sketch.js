@@ -14,7 +14,7 @@ let d = 20;
 let dx = 1;
 let obstacles = [0,0,0,0,0,0,1,1,2,2,3,3,0,0,0,0,0,0,0,0];
 let r = 0;
-let rx;
+let rx, ry, rw, rh;
 
 let x, y, vy;
 
@@ -63,11 +63,14 @@ function moveChar() {
 function blocks() {
   for (let i = 0; i < 20; i++) {
     rx = i*ground;
+    ry = height-(obstacles[i]*ground+ground);
+    rw = ground;
+    rh = obstacles[i]*ground
     if (obstacles[i] > 1) {
-      rect(rx, height-(obstacles[i]*ground+ground), ground, obstacles[i]*ground);
+      rect(rx, ry, rw, rh);
     } 
     if (obstacles[i] === 1) {
-      rect(rx, height-2*ground, ground, ground);   
+      rect(rx, ry, rw, rh);   
     }
   }
 }
