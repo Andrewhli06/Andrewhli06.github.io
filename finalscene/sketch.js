@@ -6,46 +6,44 @@
 // - describe what you did to take this project "above and beyond"
 
 
-let x, y, d, dx;
-let ground, gx, gy;
-let obsWidth, obsHeight, numOb;
-let obstacles = [];
-let state = "";
+let g = 1; // Gravity
+let jump = 15; // Jump power
+let ground = 20;
+let d = 20;
+let dx = 1;
+let obstacles = [0,0,0,0,0,0,1,1,2,2,3,3,0,0,0,0,0,0,0,0];
+let r = 0;
+let rx, ry, rw, rh;
+let gy;
+let x, y, vy, oy;
+
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  state = "start";
-  numOb = 20;
-  ground = height/10;
-  obsWidth = width/numOb;
-  obsHeight = obsWidth;
-  dx = 5;
-  gx = 0;
-  gy = height - ground;
-  d = obsWidth;
+  // randomArray();
   x = d/2;
-  y = gy - d/2; 
+  y = height - ground - d / 2;
+  oy = height - ground - d / 2;
+  vy = 0;
+  gy = height - ground;
 }
 
 function draw() {
-  background(220);
-  line(gx, gy, width, gy);
-  randomArray();
+  background(220); 
+  line(0, gy, width, gy);
+  xValTrack();
+  blockDetect();
   blocks();
   circle(x,y,d);
+  // gravity();
   moveChar();
+
 }
 
-function blocks() {
-  for (let i = 0; i <= numOb; i++) {
-    if (obstacles[i] > 0) {
-      rect(i*obsWidth, gy-obstacles[i]*obsHeight, obsWidth, obstacles[i]*obsHeight);
+function keyPressed(){
+  if (key === " ") {
+    if(y >= oy){ // on the ground
+      vy = -jump; 
     }
-  }
-}
-
-function randomArray() {
-  for (let i = 0; i <= numOb; i++) {
-    obstacles.push(floor(random(0,6)));
   }
 }
 
@@ -65,3 +63,50 @@ function moveChar() {
     }
   }
 }
+
+function blocks() {
+  for (let i = 0; i < 20; i++) {
+    rx = i*ground;
+    ry = height-(obstacles[i]*ground+ground);
+    rw = ground;
+    rh = obstacles[i]*ground;
+    if (obstacles[i] > 1) {
+      rect(rx, ry, rw, rh);
+    } 
+    if (obstacles[i] === 1) {
+      rect(rx, ry, rw, rh);   
+    }
+  }
+}
+
+// function randomArray() {
+//   for (let i = 0; i <= 20; i++) {
+//     obstacles.push(floor(random(0,6)));
+//   }
+// }
+
+function xValTrack() {
+  if ((x - d/2) % 20 === 0) {
+    r = 1;
+  } 
+  else {
+    r = 0;
+  }
+}
+
+function blockDetect() {
+  if (r === 1) {
+    y = oy - obstacles[(x - d / 2) / 20] * ground;
+  }
+}
+
+// function gravity() {
+//   y += vy;
+//   if(y < height - ground - d / 2){ // in the air
+//     vy += g;
+//   }
+//   else{
+//     vy = 0;
+//     y = height - ground - d / 2;
+//   }
+// }
