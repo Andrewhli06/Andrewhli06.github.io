@@ -16,19 +16,25 @@ let state, stateChar; // various states
 function setup() {
   createCanvas(windowWidth, windowHeight);
   state = "start";
+  stateChar = "";
   groundMag = height/10;
   pSize = groundMag;
   gy = height - groundMag;
   tx = width/2;
   ty = height - 5*pSize;
-  tSpeed = 5;
+  tSpeed = 10;
   d = pSize;
   x = 2*pSize + d/2;
   y = gy - d / 2;
+  dy = 1;
+  dx = 2;
+  ground = gy - d/2;
   obSqHeight = [];
   obSq = [];
   obRectHeight = [];
   obRect = [];
+  obX = 0;
+  obY = 0;
 }
 
 function windowResized() {
@@ -37,7 +43,9 @@ function windowResized() {
 
 function draw() {
   displaySettings();
-  console.log(obSq.length, obSqHeight.length);
+  // console.log(obSq.length, obSqHeight.length);
+  // console.log(obSq[0]*pSize, -1*obSqHeight[0]*pSize, obX, obY);
+  console.log(tx, ty);
 }
 
 function displaySettings() {
@@ -47,9 +55,11 @@ function displaySettings() {
   }
   else if (state === "play") {
     background(220);
-    mapTranslation();
-    character();
     line(0, gy, width, gy);
+    mapTranslation();
+    // boundaryCreation(); 
+    character();
+    
   }
 }
 
@@ -72,7 +82,7 @@ function obstacles() {
   obRect = [14, 19, 24, 29, 141, 155];
   obRectHeight = [1.5, 2.5, 3.5, 3.5, 0.5, 0.5];
   for (let i = 0; i <= obSq.length; i++) {
-    square(obSq[i]*pSize, -1*obSqHeight[i]*pSize, pSize);
+    rect(obSq[i]*pSize, -1*obSqHeight[i]*pSize, pSize, pSize);
   }
   for (let i = 0; i <= obRect.length; i++) {
     rect(obRect[i]*pSize, 4*pSize, pSize, -1*obRectHeight[i]*pSize);
@@ -83,6 +93,7 @@ function mapTranslation() {
   push();
   translate(tx, ty);
   obstacles();
+  collisionDetect();
   pop();
 
   if (keyIsDown(65)) {
@@ -95,4 +106,29 @@ function mapTranslation() {
 
 function character() {
   circle(x, y, d);
+  // if (keyIsDown(65)) {
+  //   x -= dx;
+  // }
+  // if (keyIsDown(68)) {
+  //   x += dx;
+  // }
+  if (keyIsDown(87)) {
+    y -= dy;
+  }
+  if (keyIsDown(83)) {
+    y += dy;
+  }
 }
+
+function collisionDetect() {
+  if (collideRectCircle(obX, -1*obY, pSize, pSize, x, y, d)) {
+    stateChar = "block";
+  }
+  console.log(stateChar);
+}
+
+// function boundaryCreation() {
+//   if (y > gy - d/2) {
+//     y = gy - d/2;
+//   }
+// }
