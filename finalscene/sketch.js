@@ -1,4 +1,4 @@
-// Geometric Mario-esque game
+// Geometric Mario-esque game *based on level 1-1 of Super Mario Bros NES
 // Andrew Li
 // 
 //
@@ -7,18 +7,92 @@
 
 let x,y,d; // circle parameters
 let dx, dy, g, jump; // physics parameters
-let rx, ry; // rectangle parameters
+let obX, obY, obSqHeight, obSq, obRectHeight, obRect; // obstacle parameters
+let tx, ty, tSpeed; // translate parameters
+let pSize; // pixel/grid parameters
 let groundMag, gy, ground; // ground parameters
 let state, stateChar; // various states
-let obstacles = []; // array generating obstacles
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
+  state = "start";
   groundMag = height/10;
+  pSize = groundMag;
   gy = height - groundMag;
+  tx = width/2;
+  ty = height - 5*pSize;
+  tSpeed = 5;
+  d = pSize;
+  x = 2*pSize + d/2;
+  y = gy - d / 2;
+  obSqHeight = [];
+  obSq = [];
+  obRectHeight = [];
+  obRect = [];
+}
+
+function windowResized() {
+  createCanvas(windowWidth, windowHeight);
 }
 
 function draw() {
-  background(220);
-  line(0, gy, width, gy);
+  displaySettings();
+  console.log(obSq.length, obSqHeight.length);
+}
+
+function displaySettings() {
+  if (state === "start") {
+    background(0);
+    showInstructions();
+  }
+  else if (state === "play") {
+    background(220);
+    mapTranslation();
+    character();
+    line(0, gy, width, gy);
+  }
+}
+
+function showInstructions() {
+  fill("white");
+  textSize(42);
+  textAlign(CENTER, CENTER);
+  text("Click the mouse to start!", width/2, height/2);
+}
+
+function mousePressed() {
+  if (state === "start") {
+    state = "play";
+  }
+}
+
+function obstacles() {
+  obSq = [0, 5, 6, 7, 7, 8, 9, 37, 38, 39, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 58, 59, 60, 61, 62, 62, 69, 70, 76, 80, 80, 84, 90, 93, 94, 95, 100, 101, 101, 102, 102, 103, 108, 109, 109, 110, 110, 110, 111, 111, 111, 111, 114, 114, 114, 114, 115, 115, 115, 116, 116, 117, 126, 127, 127, 128, 128, 128, 129, 129, 129, 129, 132, 132, 132, 132, 133, 133, 133, 134, 134, 135, 145, 146, 147, 148, 156, 157, 157, 158, 158, 158, 159, 159, 159, 159, 160, 160, 160, 160, 160, 161, 161, 161, 161, 161, 161, 162, 162, 162, 162, 162, 162, 162, 163, 163, 163, 163, 163, 163, 163, 163];
+  obSqHeight = [0, 0, 0, 0, 3, 0, 0, -1, -1, -1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, -1, -1, -1, -1, 1, -1, -1, -1, 1, 1, 1, 1, 1, -1, 1, -1, 1, -3, -3, -2, -3, -2, -1, -3, -2, -1, 0, 0, -1, -2, -3, -1, -2, -3, -2, -3, -3, -3, -3, -2, -3, -2, -1, -3, -2, -1, 0, 0, -1, -2, -3, -1, -2, -3, -2, -3, -3, -1, -1, -1, -1, -3, -3, -2, -3, -2, -1, -3, -2, -1, 0, -3, -2, -1, 0, 1, -3, -2, -1, 0, 1, 2, -3, -2, -1, 0, 1, 2, 3, -3, -2, -1, 0, 1, 2, 3, 4];
+  obRect = [14, 19, 24, 29, 141, 155];
+  obRectHeight = [1.5, 2.5, 3.5, 3.5, 0.5, 0.5];
+  for (let i = 0; i <= obSq.length; i++) {
+    square(obSq[i]*pSize, -1*obSqHeight[i]*pSize, pSize);
+  }
+  for (let i = 0; i <= obRect.length; i++) {
+    rect(obRect[i]*pSize, 4*pSize, pSize, -1*obRectHeight[i]*pSize);
+  }
+}
+
+function mapTranslation() {
+  push();
+  translate(tx, ty);
+  obstacles();
+  pop();
+
+  if (keyIsDown(65)) {
+    tx += tSpeed;
+  }
+  if (keyIsDown(68)) {
+    tx -= tSpeed;
+  }
+}
+
+function character() {
+  circle(x, y, d);
 }
