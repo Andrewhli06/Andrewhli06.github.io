@@ -207,13 +207,13 @@ function gravity() {
 //   }
 // }
 
-// // function gravity() {
-// //   y += vy;
-// //   if(y < height - ground - d / 2){ // in the air
-// //     vy += g;
-// //   }
-// //   else{
-// //     vy = 0;
-// //     y = height - ground - d / 2;
-// //   }
-// // }
+// function gravity() {
+//   y += vy;
+//   if(y < height - ground - d / 2){ // in the air
+//     vy += g;
+//   }
+//   else{
+//     vy = 0;
+//     y = height - ground - d / 2;
+//   }
+// }
