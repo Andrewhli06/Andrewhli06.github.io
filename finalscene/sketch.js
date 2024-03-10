@@ -4,6 +4,22 @@
 //
 // Extra for Experts:
 // - describe what you did to take this project "above and beyond"
+// use of push, translate, and pop functions
+// use of windowResized function
+// use of arrays
+
+// Questions to ask: how do I avoid having to individually state every block for object detection? through the use of arrays? for loops?
+// QTA: should the character be able to move left and right? or is window translation enough? how to avoid the issue of the character running off screen?
+// QTA: what kind of commenting do you expect?
+// QTA: is this enough for extra for experts?
+// Note to self: for object detection, all blocks must be individually considered. Therefore the code following line 160 will NOT be elegant.
+// NTS: implement gravity
+// NTS: improve start screen (create p5.element?)
+// NTS: look for any hard coded numbers
+// NTS: implement colours?
+// NTS: implement audio?
+// NTS: create the flag at the end?
+// NTS: create enemies? (goomba, turtles, etc)
 
 let x,y,d; // circle parameters
 let dx, dy, g, jump; // physics parameters
@@ -154,30 +170,31 @@ function collisionDetect() {
   console.log(stateChar);
 }
 
+// use of array to detect if object is "blockTop" does not work
 function airDetect() {
   obSqDistX = [0, 4, 5, 6, 7, 8];
   obSqDistY = [0, 0, 0, 0, 0, 0];
   for (let i = 0; i <= obSqDistX.length; i++) {
-    if (collideRectCircle(tx + obSqDistX[i]*pSize, ty - obSqDistY[i]*pSize, pSize, pSize, x, y, d) && y + d/2 > ty - obSqDistY[i]*pSize && y < ty - obSqDistY[i]*pSize || collideLineCircle(0, gy, width, gy, x, y, d)) {
+    if (collideRectCircle(tx, ty, pSize, pSize, x, y, d) && y + d/2 > ty && y < ty || collideLineCircle(0, gy, width, gy, x, y, d)) {
       stateAir = "false";
     }
     else {
       stateAir = "true";
     }
   }
-  console.log(stateAir);
+  // console.log(stateAir);
 }
 
 
 function groundDetect() {
   obSqDistY = [0, 0, 0, 0, 0, 0];
   for (let i = 0; i <= obSqDistY.length; i++) {
-    if (stateChar === "blockTop") {
+    if (stateChar === "blockTop" && stateAir === "false") {
       ground = ty; 
     }
     else {
       ground = gy - d/2;
     }
   }
-  // console.log(ground);
+  console.log(ground);
 }
