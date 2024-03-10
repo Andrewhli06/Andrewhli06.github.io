@@ -7,16 +7,17 @@
 
 let x,y,d; // circle parameters
 let dx, dy, g, jump; // physics parameters
-let obX, obY, obSqHeight, obSq, obRectHeight, obRect; // obstacle parameters
+let obX, obY, obSqHeight, obSq, obSqDistX, obSqDistY, obRectHeight, obRect; // obstacle parameters
 let tx, ty, tSpeed; // translate parameters
 let pSize; // pixel/grid parameters
 let groundMag, gy, ground; // ground parameters
-let state, stateChar; // various states
+let state, stateChar, stateAir; // various states
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
   state = "start";
   stateChar = "";
+  stateAir - "";
   groundMag = height/10;
   pSize = groundMag;
   gy = height - groundMag;
@@ -31,10 +32,10 @@ function setup() {
   ground = gy - d/2;
   obSqHeight = [];
   obSq = [];
+  obSqDistX = [];
+  obSqDistY = [];
   obRectHeight = [];
   obRect = [];
-  obX = 0;
-  obY = 0;
 }
 
 function windowResized() {
@@ -45,7 +46,7 @@ function draw() {
   displaySettings();
   // console.log(obSq.length, obSqHeight.length);
   // console.log(obSq[0]*pSize, -1*obSqHeight[0]*pSize, obX, obY);
-  console.log(tx, ty);
+  // console.log(tx, ty);
 }
 
 function displaySettings() {
@@ -57,7 +58,6 @@ function displaySettings() {
     background(220);
     line(0, gy, width, gy);
     mapTranslation();
-    // boundaryCreation(); 
     character();
     
   }
@@ -94,6 +94,8 @@ function mapTranslation() {
   translate(tx, ty);
   obstacles();
   collisionDetect();
+  groundDetect();
+  airDetect(); 
   pop();
 
   if (keyIsDown(65)) {
@@ -120,15 +122,62 @@ function character() {
   }
 }
 
+// detect left
+// x + d/2 > tx && x < tx
+// detect right
+// x - d/2 < tx + pSize && x > tx + pSize
+// detect top
+// y + d/2 > ty && y < ty
+// detect bottom
+// y - d/2 < ty + pSize && y > ty + pSize
+
 function collisionDetect() {
-  if (collideRectCircle(obX, -1*obY, pSize, pSize, x, y, d)) {
-    stateChar = "block";
+  obSqDistX = [0, 4, 5, 6, 7, 8];
+  obSqDistY = [0, 0, 0, 0, 0, 0];
+  for (let i = 0; i <= obSqDistX.length; i++) {
+    if (collideRectCircle(tx + obSqDistX[i]*pSize, ty - obSqDistY[i]*pSize, pSize, pSize, x, y, d) && x + d/2 > tx + obSqDistX[i]*pSize && x < tx + obSqDistX[i]*pSize) {
+      stateChar = "blockLeft";
+    }
+    else if (collideRectCircle(tx + obSqDistX[i]*pSize, ty - obSqDistY[i]*pSize, pSize, pSize, x, y, d) && x - d/2 < tx + pSize + obSqDistX[i]*pSize && x > tx + pSize + obSqDistX[i]*pSize) {
+      stateChar = "blockRight";
+    }
+    else if (collideRectCircle(tx + obSqDistX[i]*pSize, ty - obSqDistY[i]*pSize, pSize, pSize, x, y, d) && y + d/2 > ty - obSqDistY[i]*pSize && y < ty - obSqDistY[i]*pSize) {
+      stateChar = "blockTop";
+    }
+    else if (collideRectCircle(tx + obSqDistX[i]*pSize, ty - obSqDistY[i]*pSize, pSize, pSize, x, y, d) && y - d/2 < ty + pSize - obSqDistY[i]*pSize && y > ty + pSize - obSqDistY[i]*pSize) {
+      stateChar = "blockBottom";
+    } 
+    else if (collideLineCircle(0, gy, width, gy, x, y, d)) {
+      stateChar = "ground";
+    }
   }
   console.log(stateChar);
 }
 
-// function boundaryCreation() {
-//   if (y > gy - d/2) {
-//     y = gy - d/2;
-//   }
-// }
+function airDetect() {
+  obSqDistX = [0, 4, 5, 6, 7, 8];
+  obSqDistY = [0, 0, 0, 0, 0, 0];
+  for (let i = 0; i <= obSqDistX.length; i++) {
+    if (collideRectCircle(tx + obSqDistX[i]*pSize, ty - obSqDistY[i]*pSize, pSize, pSize, x, y, d) && y + d/2 > ty - obSqDistY[i]*pSize && y < ty - obSqDistY[i]*pSize || collideLineCircle(0, gy, width, gy, x, y, d)) {
+      stateAir = "false";
+    }
+    else {
+      stateAir = "true";
+    }
+  }
+  console.log(stateAir);
+}
+
+
+function groundDetect() {
+  obSqDistY = [0, 0, 0, 0, 0, 0];
+  for (let i = 0; i <= obSqDistY.length; i++) {
+    if (stateChar === "blockTop") {
+      ground = ty; 
+    }
+    else {
+      ground = gy - d/2;
+    }
+  }
+  // console.log(ground);
+}
