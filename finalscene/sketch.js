@@ -33,7 +33,6 @@ function setup() {
   createCanvas(windowWidth, windowHeight);
   state = "start";
   stateChar = "";
-  stateAir - "";
   groundMag = height/10;
   pSize = groundMag;
   gy = height - groundMag;
@@ -176,10 +175,10 @@ function airDetect() {
   obSqDistY = [0, 0, 0, 0, 0, 0];
   for (let i = 0; i <= obSqDistX.length; i++) {
     if (collideRectCircle(tx, ty, pSize, pSize, x, y, d) && y + d/2 > ty && y < ty || collideLineCircle(0, gy, width, gy, x, y, d)) {
-      stateAir = "false";
+      stateAir = false;
     }
     else {
-      stateAir = "true";
+      stateAir = true;
     }
   }
   // console.log(stateAir);
@@ -189,7 +188,7 @@ function airDetect() {
 function groundDetect() {
   obSqDistY = [0, 0, 0, 0, 0, 0];
   for (let i = 0; i <= obSqDistY.length; i++) {
-    if (stateChar === "blockTop" && stateAir === "false") {
+    if (stateChar === "blockTop" && !stateAir) {
       ground = ty; 
     }
     else {
