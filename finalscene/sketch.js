@@ -1,6 +1,6 @@
-// Character jumping on blocks
+// Mario-coloured parkour simulator
 // Andrew Li
-// 
+// March 11th, 2024
 //
 // Extra for Experts:
 // - describe what you did to take this project "above and beyond"
@@ -8,53 +8,34 @@
 // use of windowResized function to accomodate various screen sizes
 // use of arrays
 
-// Questions to ask: how do I avoid having to individually state every block for object detection? through the use of arrays? for loops?
-// QTA: should the character be able to move left and right? or is window translation enough? how to avoid the issue of the character running off screen?
-// QTA: what kind of commenting do you expect?
-// QTA: is this enough for extra for experts?
-// Note to self: for object detection, all blocks must be individually considered. Therefore the code following line 160 will NOT be elegant.
-// NTS: implement gravity
-// NTS: improve start screen (create p5.element?)
-// NTS: look for any hard coded numbers
-// NTS: implement colours?
-// NTS: implement audio?
-// NTS: create the flag at the end?
-// NTS: create enemies? (goomba, turtles, etc)
-
 
 let x,y,d; // circle parameters
-let dx, dy, g, jump; // physics parameters
-let obX, obY, obSqHeight, obSq, obSqDistX, obSqDistY, obRectHeight, obRect; // obstacle parameters
-let tx, ty, tSpeed; // translate parameters
-let pSize; // pixel/grid parameters
-let groundMag, gy, ground; // ground parameters
-let state, stateChar, stateAir, stateObHeight; // various states
+let dy, g, jump; // physics parameters
+let squares; // obstacle parameters
+let transX, transY, transSpeed; // translate parameters
+let pixelSize; // pixel/grid parameters
+let groundMagnitude, groundY, ground; // ground parameters
+let state, stateChar, stateAir; // various states
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
   state = "start";
   stateChar = "";
   stateAir = false;
-  groundMag = height/10;
-  pSize = groundMag;
-  gy = height - groundMag;
-  tx = width/2;
-  ty = height - 5*pSize;
-  tSpeed = 10;
-  d = pSize;
-  x = 2*pSize + d/2;
-  y = gy - d / 2;
-  dy = 1;
-  dx = 2;
+  groundMagnitude = height/10;
+  pixelSize = groundMagnitude;
+  groundY = height - groundMagnitude;
+  transX = width/2;
+  transY = height - 5*pixelSize;
+  transSpeed = 8;
+  d = pixelSize;
+  x = 2*pixelSize + d/2;
+  y = groundY - d / 2;
+  dy = 0;
   g = 1;
-  jump = 15;
-  ground = gy - d/2;
-  obSqHeight = [];
-  obSq = [];
-  obSqDistX = [];
-  obSqDistY = [];
-  obRectHeight = [];
-  obRect = [];
+  jump = 20;
+  ground = groundY - d/2;
+  squares = [];
 }
 
 // resizes user window while sketch is running
@@ -67,90 +48,146 @@ function draw() {
   
 }
 
-// allows for the game to have a start screen and a playing mode
+// allows for the game to have a start screen, a playing mode, and an end screen
 function displaySettings() {
   if (state === "start") {
     background(0);
     showInstructions();
+    transX = 400;
   }
   else if (state === "play") {
-    background(220);
-    rect(0, gy, width, gy);
+    background(135, 206, 235);
+    fill(19, 109, 21);
+    rect(0, groundY, width, groundY);
     mapTranslation();
     character();  
   }
+  else if (state === "end") {
+    background(0);
+    showInstructions();
+  }
 }
 
-// tells user what to do during start screen
+// tells user what to do during various screens/states
 function showInstructions() {
-  fill("white");
-  textSize(42);
-  textAlign(CENTER, CENTER);
-  text("Click the mouse to start!", width/2, height/2);
+  if (state === "start") {
+    fill("white");
+    textSize(42);
+    textAlign(CENTER, CENTER);
+    text("Click the mouse to start!", width/2, height/2);
+    textSize(36);
+    textAlign(CENTER, CENTER);
+    text("Move left with A and right with D, jump with SPACEBAR!", width/2, height - height/4);
+  }
+  else if (state === "end") {
+    fill("white");
+    textSize(42);
+    textAlign(CENTER, CENTER);
+    text("Thanks for playing! Click the mouse to restart!", width/2, height/2);
+  }
 }
 
 function mousePressed() {
   if (state === "start") {
     state = "play";
   }
-}
-
-// generates an assortment of 124 blocks (Sq: square, Rect: rectangle), backbone of the creation of the map
-function obstacles() {
-  obSq = [0, 4, 5, 6, 7, 8, 14, 19, 24, 29, 36, 37, 38, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 57, 58, 59, 60, 61, 68, 69, 75, 79, 83, 89, 92, 93, 94, 99, 100, 101, 102, 107, 108, 109, 110, 113, 114, 115, 116, 125, 126, 127, 128, 131, 132, 133, 134, 141, 144, 145, 146, 147, 155, 156, 157, 158, 159, 160, 161, 162];
-  obSqHeight = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-  for (let i = 0; i < obSq.length; i++) {
-    rect(obSq[i]*pSize, 0, pSize, pSize);
+  else if (state === "end") {
+    state = "start";
   }
 }
 
-// translates the x and y values of all obstacles, creating an infinite screen. Every subsequent function is affected by the translated x and y values
+// generates blocks at "squares"*pixelSize intervals
+function obstacles() {
+  squares = [0, 4, 5, 6, 7, 8, 14, 19, 24, 29, 36, 37, 38, 41, 42, 43, 44, 47, 48, 49, 50, 51, 52, 57, 58];
+  for (let i = 0; i < squares.length; i++) {
+    fill(188, 74, 60);
+    rect(squares[i]*pixelSize, 0, pixelSize, pixelSize);
+  }
+}
+
+// responsible for translating everything at the same pace with variables transX & transY
 function mapTranslation() {
   push();
-  translate(tx, ty);
+  translate(transX, transY);
+  screenMovement();
   obstacles();
   airDetect();
+  groundDetect();
   pop();
+}
 
+// changes the value of transX to move obstacles
+function screenMovement() {
   if (keyIsDown(65)) { // a; when user holds "a", the screen moves right
-    tx += tSpeed;
+    transX += transSpeed;
   }
   if (keyIsDown(68)) { // d; when user holds "d", the screen moves left
-    tx -= tSpeed;
+    transX -= transSpeed;
+  }
+  if (transX <= -3600) {
+    state = "end";
   }
 }
 
-// draws the actual character, as well as includes the gravity that influences its dy value
+// draws the actual character and includes the gravity that influences its dy value
 function character() {
+  fill(255, 0, 0);
   circle(x, y, d);
-  // y += dy;
-  // gravity();
-  if (keyIsDown(87)) {
-    y -= dy;
-  }
-  if (keyIsDown(83)) {
-    y += dy;
-  }
+  y += dy;
+  gravity();
 }
 
+// detects whether or not the character is in the air
 function airDetect() {
-  obSq = [0, 4, 5, 6, 7, 8, 14, 19, 24, 29, 36, 37, 38, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 57, 58, 59, 60, 61, 68, 69, 75, 79, 83, 89, 92, 93, 94, 99, 100, 101, 102, 107, 108, 109, 110, 113, 114, 115, 116, 125, 126, 127, 128, 131, 132, 133, 134, 141, 144, 145, 146, 147, 155, 156, 157, 158, 159, 160, 161, 162];
-  for (let i = 0; i < obSq.length; i++) {
-    if (collideRectCircle(0, gy, width, gy, x, y, d) || collideRectCircle(tx, ty, pSize, pSize, x, y, d) && y + d/2 > ty && y < ty || collideRectCircle(tx + 4*pSize, ty, pSize, pSize, x, y, d) && y + d/2 > ty && y < ty || collideRectCircle(tx + 5*pSize, ty, pSize, pSize, x, y, d) && y + d/2 > ty && y < ty || collideRectCircle(tx + 6*pSize, ty, pSize, pSize, x, y, d) && y + d/2 > ty && y < ty || collideRectCircle(tx + 7*pSize, ty, pSize, pSize, x, y, d) && y + d/2 > ty && y < ty || collideRectCircle(tx + 8*pSize, ty, pSize, pSize, x, y, d) && y + d/2 > ty && y < ty) {
+  squares = [0, 4, 5, 6, 7, 8, 14, 19, 24, 29, 36, 37, 38, 41, 42, 43, 44, 47, 48, 49, 50, 51, 52, 57, 58];
+  for (let i = 0; i < squares.length; i++) {
+    if (collideRectCircle(transX, transY, pixelSize, pixelSize, x, y, d) && y + d/2 >= transY && y < transY || collideRectCircle(transX + 4*pixelSize, transY, pixelSize, pixelSize, x, y, d) && y + d/2 >= transY && y < transY || collideRectCircle(transX + 5*pixelSize, transY, pixelSize, pixelSize, x, y, d) && y + d/2 >= transY && y < transY || collideRectCircle(transX + 6*pixelSize, transY, pixelSize, pixelSize, x, y, d) && y + d/2 >= transY && y < transY || collideRectCircle(transX + 7*pixelSize, transY, pixelSize, pixelSize, x, y, d) && y + d/2 >= transY && y < transY || collideRectCircle(transX + 8*pixelSize, transY, pixelSize, pixelSize, x, y, d) && y + d/2 >= transY && y < transY || collideRectCircle(transX + 14*pixelSize, transY, pixelSize, pixelSize, x, y, d) && y + d/2 >= transY && y < transY || collideRectCircle(transX + 19*pixelSize, transY, pixelSize, pixelSize, x, y, d) && y + d/2 >= transY && y < transY || collideRectCircle(transX + 24*pixelSize, transY, pixelSize, pixelSize, x, y, d) && y + d/2 >= transY && y < transY || collideRectCircle(transX + 29*pixelSize, transY, pixelSize, pixelSize, x, y, d) && y + d/2 >= transY && y < transY || collideRectCircle(transX + 36*pixelSize, transY, pixelSize, pixelSize, x, y, d) && y + d/2 >= transY && y < transY || collideRectCircle(transX + 37*pixelSize, transY, pixelSize, pixelSize, x, y, d) && y + d/2 >= transY && y < transY || collideRectCircle(transX + 38*pixelSize, transY, pixelSize, pixelSize, x, y, d) && y + d/2 >= transY && y < transY || collideRectCircle(transX + 41*pixelSize, transY, pixelSize, pixelSize, x, y, d) && y + d/2 >= transY && y < transY ||collideRectCircle(transX + 42*pixelSize, transY, pixelSize, pixelSize, x, y, d) && y + d/2 >= transY && y < transY || collideRectCircle(transX + 43*pixelSize, transY, pixelSize, pixelSize, x, y, d) && y + d/2 >= transY && y < transY || collideRectCircle(transX + 44*pixelSize, transY, pixelSize, pixelSize, x, y, d) && y + d/2 >= transY && y < transY || collideRectCircle(transX + 47*pixelSize, transY, pixelSize, pixelSize, x, y, d) && y + d/2 >= transY && y < transY || collideRectCircle(transX + 48*pixelSize, transY, pixelSize, pixelSize, x, y, d) && y + d/2 >= transY && y < transY || collideRectCircle(transX + 49*pixelSize, transY, pixelSize, pixelSize, x, y, d) && y + d/2 >= transY && y < transY || collideRectCircle(transX + 50*pixelSize, transY, pixelSize, pixelSize, x, y, d) && y + d/2 >= transY && y < transY || collideRectCircle(transX + 51*pixelSize, transY, pixelSize, pixelSize, x, y, d) && y + d/2 >= transY && y < transY || collideRectCircle(transX + 52*pixelSize, transY, pixelSize, pixelSize, x, y, d) && y + d/2 >= transY && y < transY || collideRectCircle(transX + 57*pixelSize, transY, pixelSize, pixelSize, x, y, d) && y + d/2 >= transY && y < transY || collideRectCircle(transX + 58*pixelSize, transY, pixelSize, pixelSize, x, y, d) && y + d/2 >= transY && y < transY) {
+      stateAir = false;
+      stateChar = "blockTop";
+    }
+    else if (collideRectCircle(0, groundY, width, groundY, x, y, d)) {
       stateAir = false;
     }
     else {
       stateAir = true;
+      stateChar = "";
     }
   }
   console.log(stateAir);
+  console.log(stateChar);
 }
 
-// detect left
-// x + d/2 > tx && x < tx
-// detect right
-// x - d/2 < tx + pSize && x > tx + pSize
-// detect top
-// y + d/2 > ty && y < ty
-// detect bottom
-// y - d/2 < ty + pSize && y > ty + pSize
+// changes the value of the "ground" based on if the character is on a block or not
+function groundDetect() {
+  squares = [0, 4, 5, 6, 7, 8, 14, 19, 24, 29, 36, 37, 38, 41, 42, 43, 44, 47, 48, 49, 50, 51, 52, 57, 58];
+  for (let i = 0; i < squares.length; i++) {
+    if (stateChar === "blockTop" && !stateAir) {
+      ground = transY - d/2;
+    }
+    else {
+      ground = groundY - d/2;
+    }
+  }
+  console.log(ground);
+}
+
+// jump function
+function keyPressed() {
+  if (key === " ") {
+    if (y >= ground) {
+      dy = -jump;
+    }
+  }
+}
+
+// prohibits forever ascent from jump function
+function gravity() {
+  if (stateAir && y < ground) {
+    dy += g;
+  }
+  else if (y >= ground) {
+    dy = 0;
+    y = ground;
+  }
+}
+
