@@ -27,7 +27,7 @@ let obX, obY, obSqHeight, obSq, obSqDistX, obSqDistY, obRectHeight, obRect; // o
 let tx, ty, tSpeed; // translate parameters
 let pSize; // pixel/grid parameters
 let groundMag, gy, ground; // ground parameters
-let state, stateChar, stateAir; // various states
+let state, stateChar, stateAir, stateObHeight; // various states
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -147,21 +147,21 @@ function character() {
 // y - d/2 < ty + pSize && y > ty + pSize
 
 function collisionDetect() {
-  obSqDistX = [0, 4, 5, 6, 7, 8];
+  obSqDistX = [0, 4, 5, 6, 7, 8, 36, 37, 38, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 57, 58, 59, 60, 61, 68, 69, 75, 79, 83, 89, 92, 93, 94, 99, 100, 101, 102, 107, 108, 109, 110, 113, 114, 115, 116, 125, 126, 127, 128, 131, 131, 131, 131, 132, 133, 134, 144, 145, 146, 147, 155, 156, 157, 158, 159, 160, 161, 162];
   obSqDistY = [0, 0, 0, 0, 0, 0];
   for (let i = 0; i <= obSqDistX.length; i++) {
-    if (collideRectCircle(tx + obSqDistX[i]*pSize, ty - obSqDistY[i]*pSize, pSize, pSize, x, y, d) && x + d/2 > tx + obSqDistX[i]*pSize && x < tx + obSqDistX[i]*pSize) {
-      stateChar = "blockLeft";
-    }
-    else if (collideRectCircle(tx + obSqDistX[i]*pSize, ty - obSqDistY[i]*pSize, pSize, pSize, x, y, d) && x - d/2 < tx + pSize + obSqDistX[i]*pSize && x > tx + pSize + obSqDistX[i]*pSize) {
-      stateChar = "blockRight";
-    }
-    else if (collideRectCircle(tx + obSqDistX[i]*pSize, ty - obSqDistY[i]*pSize, pSize, pSize, x, y, d) && y + d/2 > ty - obSqDistY[i]*pSize && y < ty - obSqDistY[i]*pSize) {
+    if (collideRectCircle(tx + obSqDistX[i]*pSize, ty - obSqDistY[i]*pSize, pSize, pSize, x, y, d) && y + d/2 >= ty - obSqDistY[i]*pSize && y < ty - obSqDistY[i]*pSize) {
       stateChar = "blockTop";
     }
-    else if (collideRectCircle(tx + obSqDistX[i]*pSize, ty - obSqDistY[i]*pSize, pSize, pSize, x, y, d) && y - d/2 < ty + pSize - obSqDistY[i]*pSize && y > ty + pSize - obSqDistY[i]*pSize) {
+    else if (collideRectCircle(tx + obSqDistX[i]*pSize, ty - obSqDistY[i]*pSize, pSize, pSize, x, y, d) && y - d/2 <= ty + pSize - obSqDistY[i]*pSize && y > ty + pSize - obSqDistY[i]*pSize && stateChar !== "blockTop") {
       stateChar = "blockBottom";
     } 
+    if (collideRectCircle(tx + obSqDistX[i]*pSize, ty - obSqDistY[i]*pSize, pSize, pSize, x, y, d) && x + d/2 >= tx + obSqDistX[i]*pSize && x < tx + obSqDistX[i]*pSize && stateChar !== "blockTop") {
+      stateChar = "blockLeft";
+    }
+    else if (collideRectCircle(tx + obSqDistX[i]*pSize, ty - obSqDistY[i]*pSize, pSize, pSize, x, y, d) && x - d/2 <= tx + pSize + obSqDistX[i]*pSize && x > tx + pSize + obSqDistX[i]*pSize && stateChar !== "blockTop") {
+      stateChar = "blockRight";
+    }
     else if (collideLineCircle(0, gy, width, gy, x, y, d)) {
       stateChar = "ground";
     }
@@ -170,18 +170,26 @@ function collisionDetect() {
 }
 
 // use of array to detect if object is "blockTop" does not work
+// state ob height 3, val = 7.5 is inaccurate
 function airDetect() {
-  obSqDistX = [0, 4, 5, 6, 7, 8];
-  obSqDistY = [0, 0, 0, 0, 0, 0];
   for (let i = 0; i <= obSqDistX.length; i++) {
-    if (collideRectCircle(tx, ty, pSize, pSize, x, y, d) && y + d/2 > ty && y < ty || collideLineCircle(0, gy, width, gy, x, y, d)) {
+    if (collideRectCircle(tx + 7.5*pSize, ty - 4*pSize, pSize, pSize, x, y, d) && y + d/2 >= ty - 3*pSize && y < ty - 3*pSize) {
       stateAir = false;
+      stateObHeight = 3;
+    }
+    else if (collideRectCircle(tx + 37*pSize, ty + 2*pSize, pSize, pSize, x, y, d) && y + d/2 >= ty + pSize && y < ty + pSize) {
+      stateAir = false;
+      stateObHeight = -1;
+    }
+    else if (collideRectCircle(tx, ty, pSize, pSize, x, y, d) && y + d/2 >= ty && y < ty || collideLineCircle(0, gy, width, gy, x, y, d) || collideRectCircle(tx + 5*pSize, ty, pSize, pSize, x, y, d) && y + d/2 >= ty && y < ty || collideRectCircle(tx + 6*pSize, ty, pSize, pSize, x, y, d) && y + d/2 >= ty && y < ty || collideRectCircle(tx + 7*pSize, ty, pSize, pSize, x, y, d) && y + d/2 >= ty && y < ty || collideRectCircle(tx + 8*pSize, ty - 0.5*pSize, pSize, pSize, x, y, d) && y + d/2 >= ty && y < ty || collideRectCircle(tx + 8.5*pSize, ty - 0.5*pSize, pSize, pSize, x, y, d) && y + d/2 >= ty && y < ty) {
+      stateAir = false;
+      stateObHeight = 0;
     }
     else {
       stateAir = true;
     }
   }
-  // console.log(stateAir);
+  console.log(stateAir);
 }
 
 
@@ -189,7 +197,8 @@ function groundDetect() {
   obSqDistY = [0, 0, 0, 0, 0, 0];
   for (let i = 0; i <= obSqDistY.length; i++) {
     if (stateChar === "blockTop" && !stateAir) {
-      ground = ty; 
+      ground = ty - stateObHeight* pSize;
+      y = ground - d/2; 
     }
     else {
       ground = gy - d/2;
