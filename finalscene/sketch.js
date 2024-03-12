@@ -148,7 +148,7 @@ function character() {
 
 function collisionDetect() {
   obSqDistX = [0, 4, 5, 6, 7, 8, 36, 37, 38, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 57, 58, 59, 60, 61, 68, 69, 75, 79, 83, 89, 92, 93, 94, 99, 100, 101, 102, 107, 108, 109, 110, 113, 114, 115, 116, 125, 126, 127, 128, 131, 131, 131, 131, 132, 133, 134, 144, 145, 146, 147, 155, 156, 157, 158, 159, 160, 161, 162];
-  obSqDistY = [0, 0, 0, 0, 0, 0];
+  obSqDistY = [0, 0, 0, 0, 0, 0, -1, -1, -1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1];
   for (let i = 0; i <= obSqDistX.length; i++) {
     if (collideRectCircle(tx + obSqDistX[i]*pSize, ty - obSqDistY[i]*pSize, pSize, pSize, x, y, d) && y + d/2 >= ty - obSqDistY[i]*pSize && y < ty - obSqDistY[i]*pSize) {
       stateChar = "blockTop";
