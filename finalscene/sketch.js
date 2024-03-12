@@ -6,7 +6,11 @@
 // - describe what you did to take this project "above and beyond"
 // use of push, translate, and pop functions to create an infinite screen
 // use of windowResized function to accomodate various screen sizes
-// use of arrays
+// use of arrays, exploration of p5.collide2D
+
+// Note: line 148 gives a warning message "tokenization for long lines for performance reasons", but the code still runs perfectly fine
+// Note: I was wondering if you could give me feedback regarding line 148, seeing as all the numbers used correspond to the array above, but break the code when I try to use an array. Is that a syntax issue?
+// Note: I was wondering if you could give me some suggestions on what to further explore in the realm of computer science for projects like this? especially considering I am going to UBC in the fall as a comp sci major. Thanks.
 
 
 let x,y,d; // circle parameters
