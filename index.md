@@ -10,3 +10,4 @@
 
 ## Projects
 - [Final Interactive Scene](finalscene)
+- [Arrays and Object Notation Assignment](arrObNotation)
