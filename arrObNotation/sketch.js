@@ -16,6 +16,8 @@ function setup() {
 
 function windowResized() {
   createCanvas(windowWidth, windowHeight, WEBGL);
+  noStroke();
+  cursor(CROSS);
 }
 
 
