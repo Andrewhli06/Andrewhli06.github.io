@@ -14,6 +14,10 @@ function setup() {
   cursor(CROSS);
 }
 
+function windowResized() {
+  createCanvas(windowWidth, windowHeight, WEBGL);
+}
+
 
 function draw() {
   background(220);
