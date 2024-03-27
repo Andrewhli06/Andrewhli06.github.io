@@ -1,4 +1,4 @@
-// Project Title
+// Aimlabs inspired target practice game
 // Andrew Li
 // April
 //
@@ -6,21 +6,30 @@
 // - describe what you did to take this project "above and beyond"
 let theTargets = [];
 
+
 function setup() {
   createCanvas(windowWidth, windowHeight, WEBGL);
   noStroke();
-  window.setInterval(spawnTargets, 500);
+  spawnTargets();
+  cursor(CROSS);
 }
+
 
 function draw() {
   background(220);
-  cursor(CROSS);
   displayTargets();
-
 }
 
 function mousePressed() {
-  theTargets.pop();
+  for (let target of theTargets) {
+    if (mouseX < target.transX  + width/2 + target.size && 
+      mouseX > target.transX + width/2 - target.size && 
+      mouseY < target.transY + height/2 + target.size && 
+      mouseY > target.transY + height/2 - target.size) {
+      theTargets.pop();
+      spawnTargets();
+    }
+  }
 }
 
 function displayTargets() {
@@ -32,12 +41,13 @@ function displayTargets() {
   }
 }
 
+
 function spawnTargets() {
   let someTarget = {
-    size: 30,
-    transX: random(-50, 50),
-    transY: random(-50, 50),
-    speed: 3,
+    size: 20,
+    transX: random(-100, 100),
+    transY: random(-100, 100),
+    // speed: 3,
     r: 0,
     g: 255,
     b: 255,
