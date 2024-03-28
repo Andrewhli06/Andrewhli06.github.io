@@ -14,12 +14,25 @@ function setup() {
 
   window.setInterval(spawnTargets, 500);
 
-  window.setTimeout(deleteTargets, 1000);
 }
 
 function draw() {
   background(220);
   generateGrid();
+}
+
+function mousePressed() {
+  for (let i = theTargets.length - 1; i >= 0; i--) {
+    if (hitTarget(mouseX, mouseY, theTargets[i])) {
+      theTargets.splice(i, 1);
+    }
+  }
+}
+
+function hitTarget(x, y, someTarget) {
+  let distanceAway = dist(x, y, someTarget.transX, someTarget.transY);
+  let radius = someTarget.size;
+  return distanceAway < radius;
 }
 
 function generateGrid() {
@@ -51,10 +64,4 @@ function spawnTargets() {
     dt: 0.001,
   };
   theTargets.push(someTarget);
-}
-
-function deleteTargets() {
-  for (let i = 1; i < theTargets.length; i++) {
-    theTargets.splice(i, 1);
-  }
 }
