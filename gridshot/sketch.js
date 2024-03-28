@@ -21,18 +21,30 @@ function draw() {
   generateGrid();
 }
 
+// function mousePressed() {
+//   for (let i = theTargets.length - 1; i >= 0; i--) {
+//     if (hitTarget(mouseX, mouseY, theTargets[i])) {
+//       theTargets.splice(i, 1);
+//     }
+//   }
+// }
+
+// function hitTarget(x, y, someTarget) {
+//   let distanceAway = dist(x, y, someTarget.transX, someTarget.transY);
+//   let radius = someTarget.size;
+//   return distanceAway < radius;
+// }
+
+
 function mousePressed() {
   for (let i = theTargets.length - 1; i >= 0; i--) {
-    if (hitTarget(mouseX, mouseY, theTargets[i])) {
+    if (mouseX < theTargets[i].transX  + width/2 + theTargets[i].size && 
+      mouseX > theTargets[i].transX + width/2 - theTargets[i].size && 
+      mouseY < theTargets[i].transY + height/2 + theTargets[i].size && 
+      mouseY > theTargets[i].transY + height/2 - theTargets[i].size) {
       theTargets.splice(i, 1);
     }
   }
-}
-
-function hitTarget(x, y, someTarget) {
-  let distanceAway = dist(x, y, someTarget.transX, someTarget.transY);
-  let radius = someTarget.size;
-  return distanceAway < radius;
 }
 
 function generateGrid() {
