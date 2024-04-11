@@ -16,6 +16,7 @@
 let grid;
 let cellSize;
 const GRID_SIZE = 10;
+let toggleStyle = "self";
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -40,6 +41,14 @@ function keyPressed() {
   if (key === "e") {
     grid = generateEmptyGrid(GRID_SIZE, GRID_SIZE);
   }
+
+  if (key === "n") {
+    toggleStyle = "neighbours";
+  }
+
+  if (key === "s") {
+    toggleStyle = "style";
+  }
 }
 
 function mousePressed() {
@@ -48,13 +57,16 @@ function mousePressed() {
 
   // console.log(x, y);
 
-
+  // toggle self
   toggleCell(x, y);
-  toggleCell(x + 1, y);
-  toggleCell(x - 1, y);
-  toggleCell(x, y + 1);
-  toggleCell(x, y - 1);
-  
+
+  // toggle NESW neighbours if style is set to neighbours
+  if (toggleStyle === "neighbours") {
+    toggleCell(x + 1, y);
+    toggleCell(x - 1, y);
+    toggleCell(x, y + 1);
+    toggleCell(x, y - 1);
+  }
 }
 
 function toggleCell(x, y) {
