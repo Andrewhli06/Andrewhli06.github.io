@@ -19,11 +19,27 @@ const GRID_SIZE = 10;
 let toggleStyle = "self";
 
 function setup() {
-  createCanvas(windowWidth, windowHeight);
+  if (windowWidth < windowHeight) {
+    createCanvas(windowWidth, windowWidth);
+  }
+  else {
+    createCanvas(windowHeight, windowHeight);
+  }
 
   //if randomizing the grid, do this:
   grid = generateRandomGrid(GRID_SIZE, GRID_SIZE);
   
+  //this is dumb -- should check if this is the right size!
+  cellSize = height/grid.length;
+}
+
+function windowResized() {
+  if (windowWidth < windowHeight) {
+    resizeCanvas(windowWidth, windowWidth);
+  }
+  else {
+    resizeCanvas(windowHeight, windowHeight);
+  }
   //this is dumb -- should check if this is the right size!
   cellSize = height/grid.length;
 }
