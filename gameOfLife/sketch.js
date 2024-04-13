@@ -17,6 +17,7 @@ let grid;
 let cellSize;
 const GRID_SIZE = 10;
 let toggleStyle = "self";
+let isAutoPlayOn = false;
 
 function setup() {
   if (windowWidth < windowHeight) {
@@ -46,6 +47,11 @@ function windowResized() {
 
 function draw() {
   background(220);
+
+  if (isAutoPlayOn) {
+    grid = updateGrid();
+  }
+
   displayGrid();
 }
 
@@ -65,7 +71,61 @@ function keyPressed() {
   if (key === "s") {
     toggleStyle = "style";
   }
+
+  if (key === " ") {
+    grid = updateGrid();
+  }
+
+  if (key === "a") {
+    isAutoPlayOn = !isAutoPlayOn;
+  }
 }
+
+function updateGrid() {
+  // need a second array to not mess with original grid
+  let nextTurn = generateEmptyGrid(GRID_SIZE, GRID_SIZE);
+
+  // look at every cell
+  for (let y = 0; y < GRID_SIZE; y++) {
+    for (let x = 0; x < GRID_SIZE; x++) {
+      let neighbours = 0;
+
+      // look at every cell in a 3x3 grid around the cell
+      for (let i = -1; i <= 1; i++) {
+        for (let j = -1; j <= 1; j++) {
+          // avoid going off the edge of the grid
+          if (y + i >= 0 && y + i < GRID_SIZE && x + j >= 0 && x + j <= GRID_SIZE) {
+            neighbours += grid[y + i][x + j];
+          }
+        }
+      }
+      // don't count yourself in the neighbours
+      neighbours -= grid[y][x];
+
+      // apply rules
+      if (grid[y][x] === 1) { // currently alive
+        if (neighbours === 2 || neighbours === 3) {
+          nextTurn[y][x] = 1;
+        }
+        else {
+          nextTurn[y][x] = 0;
+        }
+      }
+
+      if (grid[y][x] === 0) { // currently dead
+        if (neighbours === 3) {
+          nextTurn[y][x] = 1;
+        }
+        else {
+          nextTurn[y][x] = 0;
+        }
+      }
+    }
+  }
+  return nextTurn;
+}
+
+
 
 function mousePressed() {
   let x = Math.floor(mouseX/cellSize);
