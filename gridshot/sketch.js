@@ -42,13 +42,17 @@ function generateGrid() {
   spawnTargets();
   ambientMaterial(255);
   directionalLight(theTargets[0].r, theTargets[0].g, theTargets[0].b, theTargets[0].lightX, theTargets[0].lightY, theTargets[0].lightZ);
+  push();
   translate(theTargets[0].transX, theTargets[0].transY);
   sphere(theTargets[0].size);
+  pop();
   for (let i = 1; i <= 4; i++) {
     spawnTargets();
     ambientMaterial(255);
+    push();
     translate(theTargets[i].transX, theTargets[i].transY);
     sphere(theTargets[i].size);
+    pop();
   }
 }
 

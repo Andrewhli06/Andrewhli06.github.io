@@ -10,7 +10,9 @@ let theTargets = [];
 function setup() {
   createCanvas(windowWidth, windowHeight, WEBGL);
   noStroke();
-  spawnTargets();
+  for (let i = 0; i < 5; i++) {
+    spawnTargets();
+  }
   cursor(CROSS);
 }
 
@@ -32,7 +34,8 @@ function mousePressed() {
       mouseX > target.transX + width/2 - target.size && 
       mouseY < target.transY + height/2 + target.size && 
       mouseY > target.transY + height/2 - target.size) {
-      theTargets.pop();
+      let theIndex = theTargets.indexOf(target);
+      theTargets.splice(theIndex, 1);
       spawnTargets();
     }
   }
@@ -40,10 +43,12 @@ function mousePressed() {
 
 function displayTargets() {
   for (let target of theTargets) {
+    push();
     ambientMaterial(255);
     directionalLight(target.r, target.g, target.b, target.lightX, target.lightY, target.lightZ);
     translate(target.transX, target.transY);
     sphere(target.size);
+    pop();
   }
 }
 
