@@ -60,9 +60,6 @@ function spawnTargets() {
     lightX: 0,
     lightY: 0,
     lightZ: -100,
-    timeX: random(1000000),
-    timeY: random(1000000),
-    dt: 0.001,
   };
   theTargets.push(someTarget);
 }
