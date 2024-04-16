@@ -10,9 +10,7 @@ let theTargets = [];
 function setup() {
   createCanvas(windowWidth, windowHeight, WEBGL);
   noStroke();
-  for (let i = 0; i < 5; i++) {
-    spawnTargets();
-  }
+  spawnTargets();
   cursor(CROSS);
 }
 
@@ -34,8 +32,7 @@ function mousePressed() {
       mouseX > target.transX + width/2 - target.size && 
       mouseY < target.transY + height/2 + target.size && 
       mouseY > target.transY + height/2 - target.size) {
-      let theIndex = theTargets.indexOf(target);
-      theTargets.splice(theIndex, 1);
+      theTargets.pop();
       spawnTargets();
     }
   }

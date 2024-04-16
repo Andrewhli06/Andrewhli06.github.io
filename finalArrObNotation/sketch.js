@@ -39,6 +39,8 @@ function displaySettings() {
 
 function gameModes() {
   if (state === "singleShot") {
+    noLoop();
+    spawnTargets();
     displayTargets();
   }
 }
@@ -71,10 +73,12 @@ function mousePressed() {
 function displayTargets() {
   if (state === "singleShot") {
     for (let target of theTargets) {
+      push();
       ambientMaterial(255);
       directionalLight(target.r, target.g, target.b, target.lightX, target.lightY, target.lightZ);
       translate(target.transX, target.transY);
       sphere(target.size);
+      pop();
     }
   }
 }
