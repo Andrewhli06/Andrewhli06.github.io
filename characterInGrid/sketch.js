@@ -23,13 +23,17 @@ let player = {
   x: 0,
   y: 0,
 };
-
 let grassImg;
 let pavingImg;
+let bgMusic;
+let cantWalk;
+let state = "startScreen";
 
 function preload() {
   grassImg = loadImage("grass1.png");
   pavingImg = loadImage("paving 4.png");
+  bgMusic = loadSound("TownTheme.mp3");
+  cantWalk = loadSound("burp.wav");
 }
 
 function setup() {
@@ -48,6 +52,9 @@ function setup() {
 
   //add player to grid
   grid[player.y][player.x] = PLAYER;
+
+  bgMusic.setVolume(0.4);
+  cantWalk.setVolume(5);
 }
 
 function windowResized() {
@@ -62,8 +69,13 @@ function windowResized() {
 }
 
 function draw() {
-  background(220);
-  displayGrid();
+  if (state === "startScreen") {
+    background(0);
+  }
+  else if (state === "game") {
+    background(220);
+    displayGrid();
+  }
 }
 
 function keyPressed() {
@@ -90,6 +102,11 @@ function keyPressed() {
     movePlayer(player.x + 1, player.y + 0);
   }
 
+  if (key === " " && state === "startScreen") {
+    state = "game";
+    bgMusic.loop();
+  }
+
 }
 
 function movePlayer(x, y) {
@@ -110,6 +127,9 @@ function movePlayer(x, y) {
 
     //move the player to the new spot
     grid[player.y][player.x] = PLAYER;
+  }
+  else {
+    cantWalk.play();
   }
 } 
 
