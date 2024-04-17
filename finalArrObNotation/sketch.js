@@ -34,13 +34,13 @@ function displaySettings() {
   }
   else if (state === "gameModeChoice") {
     background(220);
+    fill("red");
+    rect(0, 0, width/2, height);
   }
 }
 
 function gameModes() {
   if (state === "singleShot") {
-    noLoop();
-    spawnTargets();
     displayTargets();
   }
 }
