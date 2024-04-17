@@ -15,9 +15,14 @@
 
 let grid;
 let cellSize;
-const GRID_SIZE = 10;
+const GRID_SIZE = 40;
 let toggleStyle = "self";
 let isAutoPlayOn = false;
+let gosperGun;
+
+function preload() {
+  gosperGun = loadJSON("gosper.json");
+}
 
 function setup() {
   if (windowWidth < windowHeight) {
@@ -62,6 +67,10 @@ function keyPressed() {
 
   if (key === "e") {
     grid = generateEmptyGrid(GRID_SIZE, GRID_SIZE);
+  }
+
+  if (key === "g") {
+    grid = gosperGun.gun;
   }
 
   if (key === "n") {
