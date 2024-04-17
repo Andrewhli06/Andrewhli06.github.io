@@ -8,8 +8,10 @@
 // NTS: make custom graphics?
 
 let theTargets = [];
-let state = "";
 let popSound;
+let setupState = "";
+let state = "";
+let WEBGL_text;
 
 function preload() {
   popSound = loadSound("pop-sound.MP3");
@@ -17,74 +19,61 @@ function preload() {
 
 function setup() {
   createCanvas(windowWidth, windowHeight, WEBGL);
-  // noStroke();
+  noStroke();
+  cursor(CROSS);
   state = "startScreen";
 }
 
 function windowResized() {
   createCanvas(windowWidth, windowHeight, WEBGL);
-  // noStroke();
+  noStroke();
   cursor(CROSS);
 }
 
+
 function draw() {
   displaySettings();
-  gameModes();
-  console.log(state);
 }
 
 function displaySettings() {
   if (state === "startScreen") {
-    background(0);
-  }
-  else if (state === "gameModeChoice") {
-    background(220);
+    showInstructions();
   }
 }
 
-function gameModes() {
-  if (state === "singleShot") {
+function showInstructions() {
+  background(0);
+  WEBGL_text = createGraphics(windowWidth, windowHeight);
+  WEBGL_text.textFont("Source Code Pro");
+  WEBGL_text.textAlign(CENTER);
+  WEBGL_text.textSize(42);
+  WEBGL_text.fill(255);
+  WEBGL_text.text("test", width/2, height/2);
+}
+
+function targetSetup() {
+  if (setupState === "singleShot") {
     spawnTargets();
-    displayTargets();
+    setupState = "play";
+  }
+  else if (setupState === "gridShot") {
+    for (let i = 0; i < 5; i++) {
+      spawnTargets();
+    }
+    setupState = "play";
   }
 }
 
 function mousePressed() {
-  if (state === "startScreen") {
-    state = "gameModeChoice";
-  }
-  else if (state === "gameModeChoice" && mouseX < width/2) { // change the parameter to conform to graphic later. width/2 is just a temp param
-    noStroke();
-    state = "singleShot";
-    cursor(CROSS);
-  }
-  else if (state === "gameModeChoice" && mouseX > width/2) { // change the parameter to conform to graphic later. width/2 is just a temp param
-    noStroke();
-    state = "gridShot";
-    cursor(CROSS);
-  }
-  else if (state === "singleShot") {
-    for (let target of theTargets) {
-      if (mouseX < target.transX  + width/2 + target.size && 
-        mouseX > target.transX + width/2 - target.size && 
-        mouseY < target.transY + height/2 + target.size && 
-        mouseY > target.transY + height/2 - target.size) {
-        theTargets.pop();
-        spawnTargets();
-      }
-    }
-  }
-  else if (state === "gridShot") {
-    for (let target of theTargets) {
-      if (mouseX < target.transX  + width/2 + target.size && 
-        mouseX > target.transX + width/2 - target.size && 
-        mouseY < target.transY + height/2 + target.size && 
-        mouseY > target.transY + height/2 - target.size) {
-        let theIndex = theTargets.indexOf(target);
-        theTargets.splice(theIndex, 1);
-        spawnTargets();
-        popSound.play();
-      }
+  for (let target of theTargets) {
+    if (mouseX < target.transX  + width/2 + target.size && 
+      mouseX > target.transX + width/2 - target.size && 
+      mouseY < target.transY + height/2 + target.size && 
+      mouseY > target.transY + height/2 - target.size) {
+      let theIndex = theTargets.indexOf(target);
+      theTargets.splice(theIndex, 1);
+      spawnTargets();
+      popSound.play();
     }
   }
 }
@@ -100,19 +89,19 @@ function displayTargets() {
   }
 }
 
+
 function spawnTargets() {
-  if (state === "singleShot") {
-    let someTarget = {
-      size: 20,
-      transX: random(-100, 100),
-      transY: random(-100, 100),
-      r: 0,
-      g: 255,
-      b: 255,
-      lightX: 0,
-      lightY: 0,
-      lightZ: -100,
-    };
-    theTargets.push(someTarget);
-  }
+  let someTarget = {
+    size: 20,
+    transX: random(-100, 100),
+    transY: random(-100, 100),
+    // speed: 3,
+    r: 0,
+    g: 255,
+    b: 255,
+    lightX: 0,
+    lightY: 0,
+    lightZ: -100,
+  };
+  theTargets.push(someTarget);
 }

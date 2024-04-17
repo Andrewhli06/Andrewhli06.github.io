@@ -36,7 +36,8 @@ function mousePressed() {
       mouseX > target.transX + width/2 - target.size && 
       mouseY < target.transY + height/2 + target.size && 
       mouseY > target.transY + height/2 - target.size) {
-      theTargets.pop();
+      let theIndex = theTargets.indexOf(target);
+      theTargets.splice(theIndex, 1);
       spawnTargets();
       popSound.play();
     }
