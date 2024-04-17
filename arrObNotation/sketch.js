@@ -5,7 +5,11 @@
 // Extra for Experts:
 // - describe what you did to take this project "above and beyond"
 let theTargets = [];
+let popSound;
 
+function preload() {
+  popSound = loadSound("pop-sound.MP3");  
+}
 
 function setup() {
   createCanvas(windowWidth, windowHeight, WEBGL);
@@ -34,6 +38,7 @@ function mousePressed() {
       mouseY > target.transY + height/2 - target.size) {
       theTargets.pop();
       spawnTargets();
+      popSound.play();
     }
   }
 }
