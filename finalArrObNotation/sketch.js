@@ -9,16 +9,21 @@
 
 let theTargets = [];
 let state = "";
+let popSound;
+
+function preload() {
+  popSound = loadSound("pop-sound.MP3");
+}
 
 function setup() {
   createCanvas(windowWidth, windowHeight, WEBGL);
-  noStroke();
+  // noStroke();
   state = "startScreen";
 }
 
 function windowResized() {
   createCanvas(windowWidth, windowHeight, WEBGL);
-  noStroke();
+  // noStroke();
   cursor(CROSS);
 }
 
@@ -34,13 +39,12 @@ function displaySettings() {
   }
   else if (state === "gameModeChoice") {
     background(220);
-    fill("red");
-    rect(0, 0, width/2, height);
   }
 }
 
 function gameModes() {
   if (state === "singleShot") {
+    spawnTargets();
     displayTargets();
   }
 }
@@ -50,10 +54,12 @@ function mousePressed() {
     state = "gameModeChoice";
   }
   else if (state === "gameModeChoice" && mouseX < width/2) { // change the parameter to conform to graphic later. width/2 is just a temp param
+    noStroke();
     state = "singleShot";
     cursor(CROSS);
   }
   else if (state === "gameModeChoice" && mouseX > width/2) { // change the parameter to conform to graphic later. width/2 is just a temp param
+    noStroke();
     state = "gridShot";
     cursor(CROSS);
   }
@@ -68,18 +74,29 @@ function mousePressed() {
       }
     }
   }
+  else if (state === "gridShot") {
+    for (let target of theTargets) {
+      if (mouseX < target.transX  + width/2 + target.size && 
+        mouseX > target.transX + width/2 - target.size && 
+        mouseY < target.transY + height/2 + target.size && 
+        mouseY > target.transY + height/2 - target.size) {
+        let theIndex = theTargets.indexOf(target);
+        theTargets.splice(theIndex, 1);
+        spawnTargets();
+        popSound.play();
+      }
+    }
+  }
 }
 
 function displayTargets() {
-  if (state === "singleShot") {
-    for (let target of theTargets) {
-      push();
-      ambientMaterial(255);
-      directionalLight(target.r, target.g, target.b, target.lightX, target.lightY, target.lightZ);
-      translate(target.transX, target.transY);
-      sphere(target.size);
-      pop();
-    }
+  for (let target of theTargets) {
+    push();
+    ambientMaterial(255);
+    directionalLight(target.r, target.g, target.b, target.lightX, target.lightY, target.lightZ);
+    translate(target.transX, target.transY);
+    sphere(target.size);
+    pop();
   }
 }
 
