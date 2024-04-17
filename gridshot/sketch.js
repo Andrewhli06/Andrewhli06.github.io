@@ -6,61 +6,58 @@
 // - describe what you did to take this project "above and beyond"
 let theTargets = [];
 
+
 function setup() {
   createCanvas(windowWidth, windowHeight, WEBGL);
   noStroke();
+  for (let i = 0; i < 5; i++) {
+    spawnTargets();
+  }
   cursor(CROSS);
-  generateGrid();
 }
 
+function windowResized() {
+  createCanvas(windowWidth, windowHeight, WEBGL);
+  noStroke();
+  cursor(CROSS);
+}
+
+
 function draw() {
-  // background(220);
-  // displayTargets();
-  
+  background(220);
+  displayTargets();
 }
 
 function mousePressed() {
-  for (let i = theTargets.length - 1; i >= 0; i--) {
-    if (hitTarget(mouseX, mouseY, theTargets[i])) {
-      if (mouseX < theTargets[i].transX  + width/2 + theTargets[i].size && 
-      mouseX > theTargets[i].transX + width/2 - theTargets[i].size && 
-      mouseY < theTargets[i].transY + height/2 + theTargets[i].size && 
-      mouseY > theTargets[i].transY + height/2 - theTargets[i].size) {
-        theTargets.splice(i, 1);
-      }
+  for (let target of theTargets) {
+    if (mouseX < target.transX  + width/2 + target.size && 
+      mouseX > target.transX + width/2 - target.size && 
+      mouseY < target.transY + height/2 + target.size && 
+      mouseY > target.transY + height/2 - target.size) {
+      let theIndex = theTargets.indexOf(target);
+      theTargets.splice(theIndex, 1);
+      spawnTargets();
     }
   }
 }
 
-function hitTarget(x, y, someTarget) {
-  let distanceAway = dist(x, y, someTarget.transX, someTarget.transY);
-  let radius = someTarget.size;
-  return distanceAway < radius;
-}
-
-function generateGrid() {
-  spawnTargets();
-  ambientMaterial(255);
-  directionalLight(theTargets[0].r, theTargets[0].g, theTargets[0].b, theTargets[0].lightX, theTargets[0].lightY, theTargets[0].lightZ);
-  push();
-  translate(theTargets[0].transX, theTargets[0].transY);
-  sphere(theTargets[0].size);
-  pop();
-  for (let i = 1; i <= 4; i++) {
-    spawnTargets();
-    ambientMaterial(255);
+function displayTargets() {
+  for (let target of theTargets) {
     push();
-    translate(theTargets[i].transX, theTargets[i].transY);
-    sphere(theTargets[i].size);
+    ambientMaterial(255);
+    directionalLight(target.r, target.g, target.b, target.lightX, target.lightY, target.lightZ);
+    translate(target.transX, target.transY);
+    sphere(target.size);
     pop();
   }
 }
 
+
 function spawnTargets() {
   let someTarget = {
     size: 20,
-    transX: random(-170, 170),
-    transY: random(-100, 150),
+    transX: random(-100, 100),
+    transY: random(-100, 100),
     // speed: 3,
     r: 0,
     g: 255,
