@@ -12,4 +12,5 @@
 
 ## Projects
 - [Final Interactive Scene](finalscene)
-- [Arrays and Object Notation Assignment](arrObNotation)
+- [Arrays and Object Notation Assignment](finalArrObNotation)
+- [2D Grid Assignment](2048)
