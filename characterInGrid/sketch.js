@@ -30,10 +30,10 @@ let cantWalk;
 let state = "startScreen";
 
 function preload() {
-  grassImg = loadImage("grass1.png");
-  pavingImg = loadImage("paving 4.png");
-  bgMusic = loadSound("TownTheme.mp3");
-  cantWalk = loadSound("burp.wav");
+  grassImg = loadImage("assets/images/grass1.png");
+  pavingImg = loadImage("assets/images/paving 4.png");
+  bgMusic = loadSound("assets/sounds/TownTheme.mp3");
+  cantWalk = loadSound("assets/sounds/burp.wav");
 }
 
 function setup() {
