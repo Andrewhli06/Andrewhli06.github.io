@@ -68,12 +68,18 @@ function generateGrid(columns, rows) {
   return emptyArray;
 }
 
-// function keyPressed() {
-//   if (key === "w" || key === UP_ARROW) {
+function keyPressed() {
+  if (key === "w" || key === UP_ARROW) {
+    moveCells(-1, 0);
+  }
+}
 
-//   }
-// }
-
-function moveCells(x, y) {
-  if (x < GRID_SIZE && y < GRID_SIZE && x >= 0 && y >= 0 && grid[y][x] === OPEN_CELL)
+function moveCells(columns, rows) {
+  if (columns < GRID_SIZE && rows < GRID_SIZE && columns >= 0 && rows >= 0) {
+    for (let y = 0; y < rows; y++) {
+      for (let x = 0; x < columns; x++) {
+        grid[y][x] = grid[columns][rows];
+      }
+    }
+  }
 }
