@@ -15,23 +15,24 @@
 
 let grid;
 let cellSize;
-const GRID_SIZE = 10;
+const GRID_SIZE = 4;
 const PLAYER = 9;
 const OPEN_TILE = 0;
 const CLOSED_TILE = 1;
+const CORNER_SIZE = 10;
 let player = {
   x: 0,
   y: 0,
 };
-let grassImg;
-let pavingImg;
+// let grassImg;
+// let pavingImg;
 let bgMusic;
 let cantWalk;
 let state = "startScreen";
 
 function preload() {
-  grassImg = loadImage("assets/images/grass1.png");
-  pavingImg = loadImage("assets/images/paving 4.png");
+  // grassImg = loadImage("assets/images/grass1.png");
+  // pavingImg = loadImage("assets/images/paving 4.png");
   bgMusic = loadSound("assets/sounds/TownTheme.mp3");
   cantWalk = loadSound("assets/sounds/burp.wav");
 }
@@ -160,16 +161,22 @@ function displayGrid() {
   for (let y = 0; y < grid.length; y++) {
     for (let x = 0; x < grid[y].length; x++) {
       if (grid[y][x] === CLOSED_TILE) {
-        // fill("black");
-        image(grassImg, x * cellSize, y * cellSize, cellSize);
+        fill("black");
+        strokeWeight(CORNER_SIZE);
+        stroke("grey");
+        square(x * cellSize, y * cellSize, cellSize, CORNER_SIZE);
       }
       else if (grid[y][x] === OPEN_TILE) {
-        // fill("white");
-        image(pavingImg, x * cellSize, y * cellSize, cellSize);
+        fill("white");
+        strokeWeight(CORNER_SIZE);
+        stroke("grey");
+        square(x * cellSize, y * cellSize, cellSize, CORNER_SIZE);
       }
       else if (grid[y][x] === PLAYER) {
         fill("red");
-        square(x * cellSize, y * cellSize, cellSize);
+        strokeWeight(CORNER_SIZE);
+        stroke("grey");
+        square(x * cellSize, y * cellSize, cellSize, CORNER_SIZE);
       }
     }
   }

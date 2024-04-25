@@ -15,7 +15,7 @@
 
 let grid;
 let cellSize;
-const GRID_SIZE = 40;
+const GRID_SIZE = 4;
 let toggleStyle = "self";
 let isAutoPlayOn = false;
 let gosperGun;

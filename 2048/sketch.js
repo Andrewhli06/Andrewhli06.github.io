@@ -68,18 +68,3 @@ function generateGrid(columns, rows) {
   return emptyArray;
 }
 
-function keyPressed() {
-  if (key === "w" || key === UP_ARROW) {
-    moveCells(-1, 0);
-  }
-}
-
-function moveCells(columns, rows) {
-  if (columns < GRID_SIZE && rows < GRID_SIZE && columns >= 0 && rows >= 0) {
-    for (let y = 0; y < rows; y++) {
-      for (let x = 0; x < columns; x++) {
-        grid[y][x] = grid[columns][rows];
-      }
-    }
-  }
-}
