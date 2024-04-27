@@ -17,7 +17,6 @@ let grid;
 const GRID_SIZE = 4;
 const CORNER_SIZE = 10;
 const OPEN_CELL = 0;
-let counter;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -41,33 +40,51 @@ function displayGrid() {
   for (let y = 0; y < grid.length; y++) {
     for (let x = 0; x < grid[y].length; x++) {
       if (grid[y][x] === 0) {
-        fill("white");
-        strokeWeight(CORNER_SIZE);
-        stroke("grey");
+        cellColour("#a9a9a9");
         square(x * cellSize, y * cellSize, cellSize, CORNER_SIZE);
       }
       else if (grid[y][x] === 2) {
-        fill("black");
-        strokeWeight(CORNER_SIZE);
-        stroke("grey");
+        cellColour("#eee4da");
         square(x * cellSize, y * cellSize, cellSize, CORNER_SIZE);
       }
       else if (grid[y][x] === 4) {
-        fill("red");
-        strokeWeight(CORNER_SIZE);
-        stroke("grey");
+        cellColour("ede0c8");
         square(x * cellSize, y * cellSize, cellSize, CORNER_SIZE);
       }
       else if (grid[y][x] === 8) {
-        fill("blue");
-        strokeWeight(CORNER_SIZE);
-        stroke("grey");
+        cellColour("#f2b179");
         square(x * cellSize, y * cellSize, cellSize, CORNER_SIZE);
       }
       else if (grid[y][x] === 16) {
-        fill("green");
-        strokeWeight(CORNER_SIZE);
-        stroke("grey");
+        cellColour("#f59563");
+        square(x * cellSize, y * cellSize, cellSize, CORNER_SIZE);
+      }
+      else if (grid[y][x] === 32) {
+        cellColour("#f67c5f");
+        square(x * cellSize, y * cellSize, cellSize, CORNER_SIZE);
+      }
+      else if (grid[y][x] === 64) {
+        cellColour("#f65e3b");
+        square(x * cellSize, y * cellSize, cellSize, CORNER_SIZE);
+      }
+      else if (grid[y][x] === 128) {
+        cellColour("#edcf72");
+        square(x * cellSize, y * cellSize, cellSize, CORNER_SIZE);
+      }
+      else if (grid[y][x] === 256) {
+        cellColour("#edcc61");
+        square(x * cellSize, y * cellSize, cellSize, CORNER_SIZE);
+      }
+      else if (grid[y][x] === 512) {
+        cellColour("#edc850");
+        square(x * cellSize, y * cellSize, cellSize, CORNER_SIZE);
+      }
+      else if (grid[y][x] === 1024) {
+        cellColour("#edc53f");
+        square(x * cellSize, y * cellSize, cellSize, CORNER_SIZE);
+      }
+      else if (grid[y][x] === 2048) {
+        cellColour("#edc22e");
         square(x * cellSize, y * cellSize, cellSize, CORNER_SIZE);
       }
     }
@@ -108,25 +125,46 @@ function spawnCells() {
   }
 }
 
+function cellColour(colour) {
+  fill(colour);
+  strokeWeight(CORNER_SIZE);
+  stroke("grey");
+}
+
 function notEmpty(value) {
   return value > 0; //segregates none zero values, that is to say cells that are filled
 }
 
 function moveCellsLeft(row) {
   let newRow = row.filter(notEmpty); // makes an array with only non empty values
-  let missing = GRID_SIZE - newRow.length; // calculates how many zeros are needed to fill the empty spots
-  let zeros = Array(missing).fill(0); // creates array with sufficient zeros to fill the gap
+  let empty = GRID_SIZE - newRow.length; // calculates how many zeros are needed to fill the empty spots
+  let zeros = Array(empty).fill(0); // creates array with sufficient zeros to fill the gap
   newRow = newRow.concat(zeros); // makes the array that pushes all non empty blocks to the left
   return newRow;
 }
 
-function moveCellsRight(row) {
+function moveCellsRight(row) { //flip grid function?
   let newRow = row.filter(notEmpty); // makes an array with only non empty values
-  let missing = GRID_SIZE - newRow.length; // calculates how many zeros are needed to fill the empty spots
-  let zeros = Array(missing).fill(0); // creates array with sufficient zeros to fill the gap
+  let empty = GRID_SIZE - newRow.length; // calculates how many zeros are needed to fill the empty spots
+  let zeros = Array(empty).fill(0); // creates array with sufficient zeros to fill the gap
   newRow = zeros.concat(newRow); // makes the array that pushes all non empty blocks to the right
   return newRow;
 }
+
+function rotateGrid() { //this function
+  let newGrid = [];
+  for (let i = 0; i < GRID_SIZE; i++) {
+    newGrid.push([]);
+    for (let j = 0; j < GRID_SIZE; j++) {
+      newGrid[i].push(grid[j][i]);
+    }
+  }
+  return newGrid;
+}
+
+// function moveCellsUp(column) {
+//   moveCellsLeft(column);
+// }
 
 function keyPressed() {
   if (key === "a") {
@@ -141,6 +179,24 @@ function keyPressed() {
       grid[i] = moveCellsRight(grid[i]);
       combineCellsRight(grid[i]);
     }
+    spawnCells();
+  }
+  else if (key === "w") {
+    grid = rotateGrid();
+    for (let i = 0; i < GRID_SIZE; i++) {
+      grid[i] = moveCellsLeft(grid[i]);
+      combineCellsLeft(grid[i]);
+    }
+    grid = rotateGrid();
+    spawnCells();
+  }
+  else if (key === "s") {
+    grid = rotateGrid();
+    for (let i = 0; i < GRID_SIZE; i++) {
+      grid[i] = moveCellsRight(grid[i]);
+      combineCellsRight(grid[i]);
+    }
+    grid = rotateGrid();
     spawnCells();
   }
 }
