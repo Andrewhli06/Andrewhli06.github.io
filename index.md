@@ -9,6 +9,7 @@
 - [Terrain Generation](terrain)
 - [Bubble movement](bubble)
 - [2D GRID](2dgrid)
+- [OOP demo](walker)
 
 ## Projects
 - [Final Interactive Scene](finalscene)
