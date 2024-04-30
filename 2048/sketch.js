@@ -1,19 +1,15 @@
-// 2048 attempt
+// Kind of 2048
 // Andrew Li
-// April
+// April 30th
 //
 // Extra for Experts:
-// - Sliding animation
-// - Autoplay?
-// - updateCanvas()?
-
-// Notes:
-// Create 4x4 grid
-// Spawn two random blocks (2 or 4)
-// Move all blocks simultaneously according to user input
+// - I explored the use of the switch operator as a replacement for multiple else if statements
+// - I also explored the functionality of a ternary operator in place of a single if else statement
+// - I also explored the use of many different array modifying operators such as fill, filter, concat, etc.
 
 let cellSize;
 let grid;
+let score = 0;
 const GRID_SIZE = 4;
 const CORNER_SIZE = 10;
 const OPEN_CELL = 0;
@@ -32,59 +28,70 @@ function setup() {
 
 function draw() {
   background(220);
-
   displayGrid();
+  cellText();
+  displayScore();
 }
 
 function displayGrid() {
   for (let y = 0; y < grid.length; y++) {
     for (let x = 0; x < grid[y].length; x++) {
-      if (grid[y][x] === 0) {
+      switch(grid[y][x]) {
+      case 0:
         cellColour("#a9a9a9");
         square(x * cellSize, y * cellSize, cellSize, CORNER_SIZE);
-      }
-      else if (grid[y][x] === 2) {
+        break;
+      case 2:
         cellColour("#eee4da");
         square(x * cellSize, y * cellSize, cellSize, CORNER_SIZE);
-      }
-      else if (grid[y][x] === 4) {
+        break;
+      case 4:
         cellColour("ede0c8");
         square(x * cellSize, y * cellSize, cellSize, CORNER_SIZE);
-      }
-      else if (grid[y][x] === 8) {
+        break;
+      case 8:
         cellColour("#f2b179");
         square(x * cellSize, y * cellSize, cellSize, CORNER_SIZE);
-      }
-      else if (grid[y][x] === 16) {
+        break;
+      case 16:
         cellColour("#f59563");
         square(x * cellSize, y * cellSize, cellSize, CORNER_SIZE);
-      }
-      else if (grid[y][x] === 32) {
+        break;
+      case 32:
         cellColour("#f67c5f");
         square(x * cellSize, y * cellSize, cellSize, CORNER_SIZE);
-      }
-      else if (grid[y][x] === 64) {
+        break;
+      case 64:
         cellColour("#f65e3b");
         square(x * cellSize, y * cellSize, cellSize, CORNER_SIZE);
-      }
-      else if (grid[y][x] === 128) {
+        break;
+      case 128:
         cellColour("#edcf72");
         square(x * cellSize, y * cellSize, cellSize, CORNER_SIZE);
-      }
-      else if (grid[y][x] === 256) {
+        break;
+      case 256:
         cellColour("#edcc61");
-        square(x * cellSize, y * cellSize, cellSize, CORNER_SIZE);
-      }
-      else if (grid[y][x] === 512) {
+        square(x * cellSize, y * cellSize, cellSize, CORNER_SIZE);   
+        break;
+      case 512:
         cellColour("#edc850");
         square(x * cellSize, y * cellSize, cellSize, CORNER_SIZE);
-      }
-      else if (grid[y][x] === 1024) {
+        break;
+      case 1024:
         cellColour("#edc53f");
         square(x * cellSize, y * cellSize, cellSize, CORNER_SIZE);
-      }
-      else if (grid[y][x] === 2048) {
+        break;
+      case 2048:
         cellColour("#edc22e");
+        square(x * cellSize, y * cellSize, cellSize, CORNER_SIZE);
+        fill("black");
+        textSize(42);
+        noStroke();
+        text("You Win!", width - 3*cellSize, 2*cellSize);
+        break;
+      }
+      if (grid[y][x] > 2048) {
+        cellColour("black");
         square(x * cellSize, y * cellSize, cellSize, CORNER_SIZE);
       }
     }
@@ -116,12 +123,7 @@ function spawnCells() {
   }
   if (openCells.length > 0) {
     let spot = random(openCells);
-    if (random(1) > 0.5) {
-      grid[spot.x][spot.y] = 2;
-    }
-    else {
-      grid[spot.x][spot.y] = 4;
-    }
+    random(1) > 0.5 ? grid[spot.x][spot.y] = 2 : grid[spot.x][spot.y] = 4;
   }
 }
 
@@ -132,7 +134,7 @@ function cellColour(colour) {
 }
 
 function notEmpty(value) {
-  return value > 0; //segregates none zero values, that is to say cells that are filled
+  return value > 0; //segregates non-zero values, that is to say cells that are filled
 }
 
 function moveCellsLeft(row) {
@@ -143,7 +145,7 @@ function moveCellsLeft(row) {
   return newRow;
 }
 
-function moveCellsRight(row) { //flip grid function?
+function moveCellsRight(row) { 
   let newRow = row.filter(notEmpty); // makes an array with only non empty values
   let empty = GRID_SIZE - newRow.length; // calculates how many zeros are needed to fill the empty spots
   let zeros = Array(empty).fill(0); // creates array with sufficient zeros to fill the gap
@@ -162,39 +164,39 @@ function rotateGrid() { //this function
   return newGrid;
 }
 
-// function moveCellsUp(column) {
-//   moveCellsLeft(column);
-// }
-
 function keyPressed() {
-  if (key === "a") {
+  if (key === "a" || keyCode === LEFT_ARROW) {
     for (let i = 0; i < GRID_SIZE; i++) {
       grid[i] = moveCellsLeft(grid[i]);
       combineCellsLeft(grid[i]);
+      grid[i] = moveCellsLeft(grid[i]);
     }
     spawnCells();
   }
-  else if (key === "d") {
+  else if (key === "d" || keyCode === RIGHT_ARROW) {
     for (let i = 0; i < GRID_SIZE; i++) {
       grid[i] = moveCellsRight(grid[i]);
       combineCellsRight(grid[i]);
+      grid[i] = moveCellsRight(grid[i]);
     }
     spawnCells();
   }
-  else if (key === "w") {
+  else if (key === "w" || keyCode === UP_ARROW) { // rotates the grid to turn cols to rows, makes the modification, then returns the rows to cols
     grid = rotateGrid();
     for (let i = 0; i < GRID_SIZE; i++) {
       grid[i] = moveCellsLeft(grid[i]);
       combineCellsLeft(grid[i]);
+      grid[i] = moveCellsLeft(grid[i]);
     }
     grid = rotateGrid();
     spawnCells();
   }
-  else if (key === "s") {
+  else if (key === "s" || keyCode === DOWN_ARROW) { // rotates the grid to turn cols to rows, makes the modification, then returns the rows to cols
     grid = rotateGrid();
     for (let i = 0; i < GRID_SIZE; i++) {
       grid[i] = moveCellsRight(grid[i]);
       combineCellsRight(grid[i]);
+      grid[i] = moveCellsRight(grid[i]);
     }
     grid = rotateGrid();
     spawnCells();
@@ -208,7 +210,7 @@ function combineCellsRight(row) {
     if (first === second) {
       row[i] = first + second;
       row[i-1] = 0;
-      break;
+      score = score + (first + second);
     }
   }
 }
@@ -220,7 +222,27 @@ function combineCellsLeft(row) {
     if (first === second) {
       row[i] = first + second;
       row[i+1] = 0;
-      break;
+      score = score + (first + second);
     }
   }
+}
+
+function cellText() {
+  for (let i = 0; i < GRID_SIZE; i++) {
+    for (let j = 0; j < GRID_SIZE; j++) {
+      if (grid[i][j] > 0) {
+        fill("black");
+        noStroke();
+        textSize(42);
+        textAlign(CENTER, CENTER);
+        text(grid[i][j], j*cellSize + cellSize/2, i*cellSize + cellSize/2);
+      }
+    }
+  }
+}
+
+function displayScore() {
+  fill("black");
+  textSize(42);
+  text("Score:" + score, width - 3*cellSize, cellSize);
 }
