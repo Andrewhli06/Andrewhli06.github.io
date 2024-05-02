@@ -4,7 +4,7 @@ class Walker {
   constructor(x, y, color) {
     this.x = x;
     this.y = y;
-    this.stepSize = 5;
+    this.stepSize = 10;
     this.color = color;
     this.radius = 5;
   }
@@ -29,20 +29,23 @@ class Walker {
   }
 }
 
-let character;
-let char2;
+let theWalkers = [];
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  character = new Walker(width/2, height/2, "red");
-  char2 = new Walker(width/4, height/4, "blue");
   noStroke();
   
 }
 
 function draw() {
-  character.move();
-  char2.move();
-  character.display();
-  char2.display();
+  for (let someWalker of theWalkers) {
+    someWalker.move();
+    someWalker.display();
+  }
+}
+
+function mousePressed() {
+  let theColor = color(random(255), random(255), random(255));
+  let myWalker = new Walker(mouseX, mouseY, theColor);
+  theWalkers.push(myWalker);
 }
