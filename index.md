@@ -11,6 +11,7 @@
 - [2D GRID](2dgrid)
 - [OOP demo](walker)
 - [OOP demo2](fireworks)
+- [OOP demo3](nodes)
 
 ## Projects
 - [Final Interactive Scene](finalscene)
