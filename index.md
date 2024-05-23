@@ -12,6 +12,7 @@
 - [OOP demo](walker)
 - [OOP demo2](fireworks)
 - [OOP demo3](nodes)
+- [clickable](clickable)
 
 ## Projects
 - [Final Interactive Scene](finalscene)
