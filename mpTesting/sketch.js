@@ -93,11 +93,12 @@ function draw() {
   background(220);
   character.update();
   wall();
-  for (var bullet of bullets) {
+  for (let bullet of bullets) {
     bullet.move();
     bullet.display();
   }
   bulletDetection();
+  barrierDetection();
   movement();
 }
 
@@ -125,13 +126,16 @@ function wall() {
 }
 
 function bulletDetection() {
-  for (var bullet of bullets) {
+  for (let bullet of bullets) {
     if (collideRectCircle(width - 25, height/2, 50, 100, bullet.position.x, bullet.position.y, bullet.size)) {
       console.log("hit");
     }
-    else {
-      console.log("miss");
-    }
   }
 
+}
+
+function barrierDetection() {
+  if (collideRectRect(character.position.x, character.position.y, character.size*2, character.size*2, width - 25, height/2, 50, 100)) {
+    console.log("wall");
+  }
 }
