@@ -14,6 +14,7 @@
 - [OOP demo3](nodes)
 - [clickable](clickable)
 - [recursive circles](recCircles)
+- [sierpinski triangle](triangle)
 
 ## Projects
 - [Final Interactive Scene](finalscene)
