@@ -13,6 +13,7 @@
 - [OOP demo2](fireworks)
 - [OOP demo3](nodes)
 - [clickable](clickable)
+- [recursive circles](recCircles)
 
 ## Projects
 - [Final Interactive Scene](finalscene)
