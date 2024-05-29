@@ -81,8 +81,8 @@ let dx, dy;
 function setup() {
   angleMode(DEGREES);
   rectMode(CENTER);
-  dx = 5;
-  dy = 5;
+  dx = 1;
+  dy = 1;
   createCanvas(400, 400);
   transX = width/2
   transY = height/2
@@ -127,7 +127,7 @@ function wall() {
 
 function bulletDetection() {
   for (let bullet of bullets) {
-    if (collideRectCircle(width - 25, height/2, 50, 100, bullet.position.x, bullet.position.y, bullet.size)) {
+    if (collideRectCircle(width - 50, height/2 - 50, 50, 100, bullet.position.x, bullet.position.y, bullet.size)) {
       console.log("hit");
     }
   }
@@ -135,7 +135,10 @@ function bulletDetection() {
 }
 
 function barrierDetection() {
-  if (collideRectRect(character.position.x, character.position.y, character.size*2, character.size*2, width - 25, height/2, 50, 100)) {
+  if (collideRectRect(character.transX - character.size, character.transY - character.size, character.size*2, character.size*2, width - 50, height/2 - 50, 50, 100)) {
     console.log("wall");
+  }
+  else {
+    console.log("empty");
   }
 }
