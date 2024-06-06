@@ -53,13 +53,26 @@ function wall() {
   rect(0, height-25, width, 25)
 }
 
+// function bulletDetection() {
+//   for (let bullet of bullets) {
+//     if (collideRectCircle(0, height-25, width, 25, bullet.transX, bullet.transY, bullet.size)) {
+//       console.log("hit");
+//       bullet.dy = 0;
+//       let theIndex = bullets.indexOf(bullet);
+//       bullets.splice(theIndex, 1);
+//     }
+//     console.log(bullet.transX, bullet.transY);
+//   }
+
+// }
+
 function bulletDetection() {
   for (let bullet of bullets) {
-    if (collideRectCircle(0, height-25, width, 25, bullet.transX, bullet.transY, bullet.size)) {
-      console.log("hit");
-      bullet.dy = 0;
+    if (bullet.transY > height - 25 - bullet.size) {
+      bullet.transY = height - 25;
+      let theIndex = bullets.indexOf(bullet);
+      bullets.splice(theIndex, 1);
     }
-    console.log(bullet.transX, bullet.transY);
+    console.log(bullets);
   }
-
 }
